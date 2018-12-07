@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.mariobros.MarioBros;
 
 public class Hud {
-
   public Stage stage;
   private Viewport viewport;
 

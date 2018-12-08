@@ -1,6 +1,7 @@
 package com.github.mariobros.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
+import com.github.mariobros.Sprites.Mario;
 
 public class PlayScreen implements Screen {
   //reference to our Game, used to set Screens
@@ -39,6 +41,9 @@ public class PlayScreen implements Screen {
   private World world;
   private Box2DDebugRenderer b2dr;
 
+  //mario
+  private Mario player;
+
   private static final int  DELTA_X = 100;
 
   public PlayScreen(MarioBros game) {
@@ -47,7 +52,7 @@ public class PlayScreen implements Screen {
     gameCam = new OrthographicCamera();
 
     //create a FitViewport to maintain virtual aspect ratio
-    gamePort = new FitViewport(MarioBros.V_WIDTH, MarioBros.V_HEIGHT, gameCam);
+    gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM, MarioBros.V_HEIGHT / MarioBros.PPM, gameCam);
 
     //create our game HUD for scores/timers/level info
     hud = new Hud(game.batch);
@@ -55,12 +60,12 @@ public class PlayScreen implements Screen {
     //load our map and setup our map renderer
     mapLoader = new TmxMapLoader();
     map = mapLoader.load("tiles/supermario.tmx");
-    renderer = new OrthogonalTiledMapRenderer(map);
+    renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
 
     //initially set our gameCam to be centered correctly at the start
     gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
-    world = new World(new Vector2(0,0), true);
+    world = new World(new Vector2(0,-10), true);
     b2dr = new Box2DDebugRenderer();
 
     BodyDef bdef = new BodyDef();
@@ -68,17 +73,16 @@ public class PlayScreen implements Screen {
     FixtureDef fdef = new FixtureDef();
     Body body;
 
-
     //create ground bodies/fixtures
     for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
       Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
       bdef.type = BodyDef.BodyType.StaticBody;
-      bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+      bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
 
       body = world.createBody(bdef);
 
-      shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+      shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM , rect.getHeight() / 2 / MarioBros.PPM);
       fdef.shape = shape;
       body.createFixture(fdef);
     }
@@ -88,11 +92,11 @@ public class PlayScreen implements Screen {
       Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
       bdef.type = BodyDef.BodyType.StaticBody;
-      bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+      bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
 
       body = world.createBody(bdef);
 
-      shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+      shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
       fdef.shape = shape;
       body.createFixture(fdef);
     }
@@ -102,11 +106,11 @@ public class PlayScreen implements Screen {
       Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
       bdef.type = BodyDef.BodyType.StaticBody;
-      bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+      bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
 
       body = world.createBody(bdef);
 
-      shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+      shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
       fdef.shape = shape;
       body.createFixture(fdef);
     }
@@ -116,14 +120,17 @@ public class PlayScreen implements Screen {
       Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
       bdef.type = BodyDef.BodyType.StaticBody;
-      bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+      bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
 
       body = world.createBody(bdef);
 
-      shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+      shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
       fdef.shape = shape;
       body.createFixture(fdef);
     }
+
+    //create mario
+    player = new Mario(world);
   }
 
   @Override
@@ -152,14 +159,34 @@ public class PlayScreen implements Screen {
   }
 
   public void update(float dt) {
+    //handle user input first
     handleInput(dt);
 
+    world.step(1/60f, 6, 2);
+
+    //set the camera track mario's x coordinate
+    gameCam.position.x = player.b2body.getPosition().x;
+
+    //update our gamecam with correct coordinates after changes
     gameCam.update();
+
+    //tell our renderer to draw only what our camera can see in our game world
     renderer.setView(gameCam);
   }
 
   private void handleInput(float dt) {
-    if (Gdx.input.isTouched()) gameCam.position.x += DELTA_X * dt;
+    if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+      player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+    }
+
+    if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
+      player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+    }
+
+    if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
+      player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+    }
+
   }
 
   @Override

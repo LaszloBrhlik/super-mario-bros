@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -22,6 +23,9 @@ public class PlayScreen implements Screen {
   //reference to our Game, used to set Screens
   private MarioBros game;
 
+  private TextureAtlas atlas;
+
+  //basic playscreen variables
   private OrthographicCamera gameCam;
   private Viewport gamePort;
   private Hud hud;
@@ -41,6 +45,8 @@ public class PlayScreen implements Screen {
   private static final int  DELTA_X = 100;
 
   public PlayScreen(MarioBros game) {
+    atlas = new TextureAtlas("Mario_and_Enemies.pack");
+
     this.game = game;
     //create cam used to follow mario through cam world
     gameCam = new OrthographicCamera();
@@ -69,7 +75,11 @@ public class PlayScreen implements Screen {
     new B2WorldCreator(world, map);
 
     //create mario
-    player = new Mario(world);
+    player = new Mario(world, this);
+  }
+
+  public TextureAtlas getAtlas() {
+    return atlas;
   }
 
   @Override
@@ -92,6 +102,11 @@ public class PlayScreen implements Screen {
     //render our Box2DDebugLines
     b2dr.render(world, gameCam.combined);
 
+    game.batch.setProjectionMatrix(gameCam.combined);
+    game.batch.begin();
+    player.draw(game.batch);
+    game.batch.end();
+
     //set our batch to now draw what the HUD camera sees
     game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
     hud.stage.draw();
@@ -101,7 +116,10 @@ public class PlayScreen implements Screen {
     //handle user input first
     handleInput(dt);
 
+    //takes 1 step in the physics simulation(60 times per second)
     world.step(1/60f, 6, 2);
+
+    player.update(dt);
 
     //set the camera track mario's x coordinate
     gameCam.position.x = player.b2body.getPosition().x;

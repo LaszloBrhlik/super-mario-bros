@@ -18,6 +18,7 @@ import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
 import com.github.mariobros.Sprites.Mario;
 import com.github.mariobros.Tools.B2WorldCreator;
+import com.github.mariobros.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
   //reference to our Game, used to set Screens
@@ -76,6 +77,10 @@ public class PlayScreen implements Screen {
 
     //create mario
     player = new Mario(world, this);
+
+    world.setContactListener(new WorldContactListener());
+
+
   }
 
   public TextureAtlas getAtlas() {

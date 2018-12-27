@@ -7,6 +7,8 @@ import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
 
 public class Brick extends InteractiveTileObject {
+  private final int BRICK_SCORE = 200;
+
   public Brick(World world, TiledMap map, Rectangle bounds) {
     super(world, map, bounds);
     fixture.setUserData(this);
@@ -17,6 +19,6 @@ public class Brick extends InteractiveTileObject {
   public void onHeadHit() {
     setCategoryFilter(MarioBros.DESTROYED_BIT);
     getCell().setTile(null);
-    Hud.addScore(200);
+    Hud.addScore(BRICK_SCORE);
   }
 }

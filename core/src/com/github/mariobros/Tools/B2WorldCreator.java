@@ -6,8 +6,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.github.mariobros.Sprites.Brick;
-import com.github.mariobros.Sprites.Candy;
 import com.github.mariobros.Sprites.Coin;
+import com.github.mariobros.Sprites.Candy;
 import com.github.mariobros.Sprites.Ground;
 import com.github.mariobros.Sprites.Pipe;
 
@@ -30,7 +30,7 @@ public class B2WorldCreator {
     //create coins bodies/fixtures
     for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
       Rectangle rect = ((RectangleMapObject) object).getRectangle();
-      new Coin(world, map, rect);
+      new Candy(world, map, rect);
     }
 
     //create bricks bodies/fixtures
@@ -42,7 +42,7 @@ public class B2WorldCreator {
     //create candy bodies/fixtures
     for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
       Rectangle rect = ((RectangleMapObject) object).getRectangle();
-      new Candy(world, map, rect);
+      new Coin(world, map, rect);
     }
   }
 }

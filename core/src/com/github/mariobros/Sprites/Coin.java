@@ -1,6 +1,7 @@
 package com.github.mariobros.Sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Rectangle;
@@ -23,7 +24,22 @@ public class Coin extends InteractiveTileObject {
   @Override
   public void onHeadHit() {
     Gdx.app.log("coin", "collision");
+    playSound();
+    addScore();
     getCell().setTile(tileSet.getTile(BLANK_COIN_INDEX));
-    Hud.addScore(COIN_SCORE);
+  }
+
+  public void playSound() {
+    if (getCell().getTile().getId() == BLANK_COIN_INDEX) {
+      MarioBros.assetManager.get("audio/sounds/bump.wav", Sound.class).play();
+    } else {
+      MarioBros.assetManager.get("audio/sounds/coin.wav", Sound.class).play();
+    }
+  }
+
+  private void addScore() {
+    if (getCell().getTile().getId() != BLANK_COIN_INDEX) {
+      Hud.addScore(COIN_SCORE);
+    }
   }
 }

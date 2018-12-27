@@ -79,8 +79,6 @@ public class PlayScreen implements Screen {
     player = new Mario(world, this);
 
     world.setContactListener(new WorldContactListener());
-
-
   }
 
   public TextureAtlas getAtlas() {
@@ -125,6 +123,7 @@ public class PlayScreen implements Screen {
     world.step(1/60f, 6, 2);
 
     player.update(dt);
+    hud.update(dt);
 
     //set the camera track mario's x coordinate
     gameCam.position.x = player.b2body.getPosition().x;

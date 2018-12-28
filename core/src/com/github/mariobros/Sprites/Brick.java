@@ -22,4 +22,9 @@ public class Brick extends InteractiveTileObject {
     Hud.addScore(BRICK_SCORE);
     MarioBros.assetManager.get("audio/sounds/breakblock.wav", Sound.class).play();
   }
+
+  @Override
+  public void fixtureDefFilterCategoryBits() {
+
+  }
 }

@@ -14,4 +14,9 @@ public class Candy extends InteractiveTileObject {
   public void onHeadHit() {
     Gdx.app.log("candy", "collision");
   }
+
+  @Override
+  public void fixtureDefFilterCategoryBits() {
+
+  }
 }

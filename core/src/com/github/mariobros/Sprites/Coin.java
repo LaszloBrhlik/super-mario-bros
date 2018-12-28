@@ -41,4 +41,9 @@ public class Coin extends InteractiveTileObject {
       Hud.addScore(COIN_SCORE);
     }
   }
+
+  @Override
+  public void fixtureDefFilterCategoryBits() {
+
+  }
 }

@@ -18,17 +18,18 @@ public abstract class InteractiveTileObject {
   protected TiledMap map;
   protected Rectangle bounds;
   protected Body body;
-
   protected Fixture fixture;
+  protected BodyDef bdef;
+  protected FixtureDef fdef;
+  protected PolygonShape shape;
 
   public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
     this.world = screen.getWorld();
     this.map = screen.getMap();
     this.bounds = bounds;
-
-    BodyDef bdef = new BodyDef();
-    FixtureDef fdef = new FixtureDef();
-    PolygonShape shape = new PolygonShape();
+    this.bdef = new BodyDef();
+    this.fdef = new FixtureDef();
+    this.shape = new PolygonShape();
 
     bdef.type = BodyDef.BodyType.StaticBody;
     bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / MarioBros.PPM, (bounds.getY() + bounds.getHeight() / 2) / MarioBros.PPM);
@@ -37,6 +38,7 @@ public abstract class InteractiveTileObject {
 
     shape.setAsBox(bounds.getWidth() / 2 / MarioBros.PPM, bounds.getHeight() / 2 / MarioBros.PPM);
     fdef.shape = shape;
+    fixtureDefFilterCategoryBits();
     fixture = body.createFixture(fdef);
   }
 
@@ -53,4 +55,6 @@ public abstract class InteractiveTileObject {
      return layer.getCell((int) (body.getPosition().x * MarioBros.PPM / MarioBros.TILE_SIZE),
          (int) (body.getPosition().y * MarioBros.PPM / MarioBros.TILE_SIZE));
   }
+
+  public abstract void fixtureDefFilterCategoryBits();
 }

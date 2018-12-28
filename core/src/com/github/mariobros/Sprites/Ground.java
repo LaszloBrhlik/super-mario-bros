@@ -12,4 +12,9 @@ public class Ground extends InteractiveTileObject {
   public void onHeadHit() {
 
   }
+
+  @Override
+  public void fixtureDefFilterCategoryBits() {
+
+  }
 }

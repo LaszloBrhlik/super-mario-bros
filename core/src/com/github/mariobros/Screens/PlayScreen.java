@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
+import com.github.mariobros.Sprites.Goomba;
 import com.github.mariobros.Sprites.Mario;
 import com.github.mariobros.Tools.B2WorldCreator;
 import com.github.mariobros.Tools.WorldContactListener;
@@ -41,8 +42,9 @@ public class PlayScreen implements Screen {
   private World world;
   private Box2DDebugRenderer b2dr;
 
-  //mario
+  //sprites
   private Mario player;
+  private Goomba goomba;
 
   private Music music;
 
@@ -86,6 +88,8 @@ public class PlayScreen implements Screen {
     music = MarioBros.assetManager.get("audio/music/mario_music.ogg", Music.class);
     music.setLooping(true);
     music.play();
+
+    goomba = new Goomba(this, 32 / MarioBros.PPM, 32 / MarioBros.PPM);
   }
 
   public TextureAtlas getAtlas() {
@@ -95,6 +99,27 @@ public class PlayScreen implements Screen {
   @Override
   public void show() {
 
+  }
+
+  public void update(float dt) {
+    //handle user input first
+    handleInput(dt);
+
+    //takes 1 step in the physics simulation(60 times per second)
+    world.step(1/60f, 6, 2);
+
+    player.update(dt);
+    goomba.update(dt);
+    hud.update(dt);
+
+    //set the camera track mario's x coordinate
+    gameCam.position.x = player.b2body.getPosition().x;
+
+    //update our gamecam with correct coordinates after changes
+    gameCam.update();
+
+    //tell our renderer to draw only what our camera can see in our game world
+    renderer.setView(gameCam);
   }
 
   @Override
@@ -115,31 +140,12 @@ public class PlayScreen implements Screen {
     game.batch.setProjectionMatrix(gameCam.combined);
     game.batch.begin();
     player.draw(game.batch);
+    goomba.draw(game.batch);
     game.batch.end();
 
     //set our batch to now draw what the HUD camera sees
     game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
     hud.stage.draw();
-  }
-
-  public void update(float dt) {
-    //handle user input first
-    handleInput(dt);
-
-    //takes 1 step in the physics simulation(60 times per second)
-    world.step(1/60f, 6, 2);
-
-    player.update(dt);
-    hud.update(dt);
-
-    //set the camera track mario's x coordinate
-    gameCam.position.x = player.b2body.getPosition().x;
-
-    //update our gamecam with correct coordinates after changes
-    gameCam.update();
-
-    //tell our renderer to draw only what our camera can see in our game world
-    renderer.setView(gameCam);
   }
 
   private void handleInput(float dt) {

@@ -1,6 +1,7 @@
 package com.github.mariobros.Sprites;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
 
 public class Pipe extends InteractiveTileObject {
@@ -11,5 +12,10 @@ public class Pipe extends InteractiveTileObject {
   @Override
   public void onHeadHit() {
 
+  }
+
+  @Override
+  public void fixtureDefFilterCategoryBits() {
+    fdef.filter.categoryBits = MarioBros.OBJECT_BIT;
   }
 }

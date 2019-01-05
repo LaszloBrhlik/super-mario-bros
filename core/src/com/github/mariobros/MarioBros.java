@@ -12,6 +12,7 @@ public class MarioBros extends Game {
   public static final int V_HEIGHT = 208;
   public static final float PPM = 100f;
   public static final int TILE_SIZE = 16;
+  public static final int AVAKE_ENEMY_TILE_NR = 14;
 
   public static final short GROUND_BIT = 1;
   public static final short MARIO_BIT = 2;

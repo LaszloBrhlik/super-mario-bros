@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
-import com.github.mariobros.Sprites.Goomba;
+import com.github.mariobros.Sprites.Enemies.Enemy;
 import com.github.mariobros.Sprites.Mario;
 import com.github.mariobros.Tools.B2WorldCreator;
 import com.github.mariobros.Tools.WorldContactListener;
@@ -41,14 +41,14 @@ public class PlayScreen implements Screen {
   //Box2d variables
   private World world;
   private Box2DDebugRenderer b2dr;
+  private B2WorldCreator creator;
 
   //sprites
   private Mario player;
-  private Goomba goomba;
 
   private Music music;
 
-  private static final int  DELTA_X = 100;
+  private static final int DELTA_X = 100;
 
   public PlayScreen(MarioBros game) {
     atlas = new TextureAtlas("Mario_and_Enemies.pack");
@@ -72,13 +72,13 @@ public class PlayScreen implements Screen {
     gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
     //create our box2d world, setting no gravity in x, -10 gravity to y, and allow bodies to sleep
-    world = new World(new Vector2(0,-10), true);
+    world = new World(new Vector2(0, -10), true);
 
     //allow debug lines of our box2d world
     b2dr = new Box2DDebugRenderer();
 
     //create world
-    new B2WorldCreator(this);
+    creator = new B2WorldCreator(this);
 
     //create mario
     player = new Mario(this);
@@ -88,8 +88,6 @@ public class PlayScreen implements Screen {
     music = MarioBros.assetManager.get("audio/music/mario_music.ogg", Music.class);
     music.setLooping(true);
     music.play();
-
-    goomba = new Goomba(this, 64 / MarioBros.PPM, 32 / MarioBros.PPM);
   }
 
   public TextureAtlas getAtlas() {
@@ -106,10 +104,15 @@ public class PlayScreen implements Screen {
     handleInput(dt);
 
     //takes 1 step in the physics simulation(60 times per second)
-    world.step(1/60f, 6, 2);
+    world.step(1 / 60f, 6, 2);
 
     player.update(dt);
-    goomba.update(dt);
+    for (Enemy enemy : creator.getGoombas()) {
+      enemy.update(dt);
+      if (enemy.getX() < player.getX() + MarioBros.AVAKE_ENEMY_TILE_NR * MarioBros.TILE_SIZE / MarioBros.PPM) {
+        enemy.b2body.setActive(true);
+      }
+    }
     hud.update(dt);
 
     //set the camera track mario's x coordinate
@@ -140,7 +143,9 @@ public class PlayScreen implements Screen {
     game.batch.setProjectionMatrix(gameCam.combined);
     game.batch.begin();
     player.draw(game.batch);
-    goomba.draw(game.batch);
+    for (Enemy enemy : creator.getGoombas()) {
+      enemy.draw(game.batch);
+    }
     game.batch.end();
 
     //set our batch to now draw what the HUD camera sees

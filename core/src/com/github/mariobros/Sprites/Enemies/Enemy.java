@@ -16,7 +16,7 @@ public abstract class Enemy extends Sprite {
   protected boolean toDestroy;
   protected boolean destroyed;
 
-  public Body b2body;
+  public Body body;
   public Vector2 velocity;
 
 
@@ -28,7 +28,7 @@ public abstract class Enemy extends Sprite {
     setPosition(x, y);
     defineEnemy();
     this.velocity = new Vector2(1, 0);
-    b2body.setActive(false);
+    body.setActive(false);
   }
 
   protected abstract void defineEnemy();

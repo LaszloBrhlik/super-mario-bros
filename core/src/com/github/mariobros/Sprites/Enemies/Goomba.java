@@ -45,13 +45,13 @@ public class Goomba extends Enemy {
   public void update(float dt) {
     stateTime += dt;
     if (toDestroy && !destroyed) {
-      world.destroyBody(b2body);
+      world.destroyBody(body);
       destroyed = true;
       setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32, 0, 16, 16));
       stateTime = 0;
     } else if (!destroyed) {
-      b2body.setLinearVelocity(velocity);
-      setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+      body.setLinearVelocity(velocity);
+      setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
       setRegion((TextureRegion) walkAnimation.getKeyFrame(stateTime, true));
     }
   }
@@ -61,7 +61,7 @@ public class Goomba extends Enemy {
     bdef = new BodyDef();
     bdef.position.set(getX(), getY());
     bdef.type = BodyDef.BodyType.DynamicBody;
-    b2body = world.createBody(bdef);
+    body = world.createBody(bdef);
 
     fdef = new FixtureDef();
     CircleShape shape = new CircleShape();
@@ -75,7 +75,7 @@ public class Goomba extends Enemy {
         MarioBros.MARIO_BIT;
 
     fdef.shape = shape;
-    b2body.createFixture(fdef).setUserData(this);
+    body.createFixture(fdef).setUserData(this);
 
     //create the head here:
     PolygonShape head = new PolygonShape();
@@ -89,7 +89,7 @@ public class Goomba extends Enemy {
     fdef.shape = head;
     fdef.restitution = 0.5f;
     fdef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
-    b2body.createFixture(fdef).setUserData(this);
+    body.createFixture(fdef).setUserData(this);
   }
 
   public void draw(Batch batch) {

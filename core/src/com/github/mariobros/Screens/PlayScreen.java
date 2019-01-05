@@ -110,7 +110,7 @@ public class PlayScreen implements Screen {
     for (Enemy enemy : creator.getGoombas()) {
       enemy.update(dt);
       if (enemy.getX() < player.getX() + MarioBros.AVAKE_ENEMY_TILE_NR * MarioBros.TILE_SIZE / MarioBros.PPM) {
-        enemy.b2body.setActive(true);
+        enemy.body.setActive(true);
       }
     }
     hud.update(dt);

@@ -21,10 +21,10 @@ public class Mario extends Sprite {
   private static final int MARIO_STARTING_POS_Y = 32;
   private static final int MARIO_SMALL_RUN_SPRITE_END_POS = 4;
   private static final int MARIO_SMALL_JUMP_SPRITE_END_POS = 6;
-  private static final int MARIO_SMALL_STAND_SPRITE_POS_X = 0;
+  private static final int MARIO_SMALL_STAND_SPRITE_POS_X = 1;
   private static final int MARIO_SMALL_SPRITE_WIDTH = 16;
   private static final int MARIO_SMALL_SPRITE_HEIGHT = 16;
-  private static final int MARIO_SMALL_SPRITE_Y = 0;
+  private static final int MARIO_SMALL_SPRITE_Y = 11;
   private static final float frameDuration = 0.1f;
   private static final float marioShapeRadius = 6.5f;
   private static final float marioHeadEdgeX = 2;

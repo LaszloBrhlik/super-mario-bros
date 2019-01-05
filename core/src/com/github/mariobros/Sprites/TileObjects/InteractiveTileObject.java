@@ -1,4 +1,4 @@
-package com.github.mariobros.Sprites;
+package com.github.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;

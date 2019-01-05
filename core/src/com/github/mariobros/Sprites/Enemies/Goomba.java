@@ -44,7 +44,7 @@ public class Goomba extends Enemy {
 
   public void update(float dt) {
     stateTime += dt;
-    if (setToDestroy && !destroyed) {
+    if (toDestroy && !destroyed) {
       world.destroyBody(b2body);
       destroyed = true;
       setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32, 0, 16, 16));
@@ -100,6 +100,6 @@ public class Goomba extends Enemy {
 
   @Override
   public void hitOnHead() {
-    setToDestroy = true;
+    toDestroy = true;
   }
 }

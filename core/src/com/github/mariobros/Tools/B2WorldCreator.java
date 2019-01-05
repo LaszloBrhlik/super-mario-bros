@@ -8,12 +8,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
-import com.github.mariobros.Sprites.Brick;
-import com.github.mariobros.Sprites.Coin;
-import com.github.mariobros.Sprites.Candy;
+import com.github.mariobros.Sprites.TileObjects.Brick;
+import com.github.mariobros.Sprites.TileObjects.Coin;
+import com.github.mariobros.Sprites.TileObjects.Candy;
 import com.github.mariobros.Sprites.Enemies.Goomba;
-import com.github.mariobros.Sprites.Ground;
-import com.github.mariobros.Sprites.Pipe;
+import com.github.mariobros.Sprites.TileObjects.Ground;
+import com.github.mariobros.Sprites.TileObjects.Pipe;
 
 public class B2WorldCreator {
   private Array<Goomba> goombas;

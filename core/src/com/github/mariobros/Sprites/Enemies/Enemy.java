@@ -13,7 +13,7 @@ public abstract class Enemy extends Sprite {
   protected PlayScreen screen;
   protected BodyDef bdef;
   protected FixtureDef fdef;
-  protected boolean setToDestroy;
+  protected boolean toDestroy;
   protected boolean destroyed;
 
   public Body b2body;
@@ -23,7 +23,7 @@ public abstract class Enemy extends Sprite {
   public Enemy(PlayScreen screen, float x, float y) {
     this.world = screen.getWorld();
     this.screen = screen;
-    this.setToDestroy = false;
+    this.toDestroy = false;
     this.destroyed = false;
     setPosition(x, y);
     defineEnemy();

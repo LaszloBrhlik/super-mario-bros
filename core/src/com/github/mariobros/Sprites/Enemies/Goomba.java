@@ -13,7 +13,7 @@ import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
 
 public class Goomba extends Enemy {
-  private static final float goombaShapeRadius = 6.5f;
+  private static final float GOOMBA_SHAPE_RADIUS = 6.5f;
   private static final int GOOMBA_SPRITE_WIDTH = 16;
   private static final int GOOMBA_SPRITE_HEIGHT = 16;
   private static final int GOOMBA_SPRITE_Y = 0;
@@ -65,7 +65,7 @@ public class Goomba extends Enemy {
 
     fdef = new FixtureDef();
     CircleShape shape = new CircleShape();
-    shape.setRadius(goombaShapeRadius / MarioBros.PPM);
+    shape.setRadius(GOOMBA_SHAPE_RADIUS / MarioBros.PPM);
     fdef.filter.categoryBits = MarioBros.ENEMY_BIT;
     fdef.filter.maskBits = MarioBros.GROUND_BIT |
         MarioBros.COIN_BIT |

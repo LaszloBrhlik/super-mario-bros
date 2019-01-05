@@ -13,14 +13,20 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
 import com.github.mariobros.Sprites.Enemies.Enemy;
+import com.github.mariobros.Sprites.Items.Item;
+import com.github.mariobros.Sprites.Items.ItemDef;
+import com.github.mariobros.Sprites.Items.Mushroom;
 import com.github.mariobros.Sprites.Mario;
 import com.github.mariobros.Tools.B2WorldCreator;
 import com.github.mariobros.Tools.WorldContactListener;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen implements Screen {
   //reference to our Game, used to set Screens
@@ -46,6 +52,11 @@ public class PlayScreen implements Screen {
   //sprites
   private Mario player;
 
+  //items
+  private Array<Item> items;
+  private LinkedBlockingQueue<ItemDef> itemsToSpawn;
+
+  //music
   private Music music;
 
   private static final int DELTA_X = 100;
@@ -83,11 +94,17 @@ public class PlayScreen implements Screen {
     //create mario
     player = new Mario(this);
 
+    //create contact listener
     world.setContactListener(new WorldContactListener());
 
+    //create music
     music = MarioBros.assetManager.get("audio/music/mario_music.ogg", Music.class);
     music.setLooping(true);
     music.play();
+
+    //create items
+    items = new Array<Item>();
+    itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
   }
 
   public TextureAtlas getAtlas() {
@@ -97,32 +114,6 @@ public class PlayScreen implements Screen {
   @Override
   public void show() {
 
-  }
-
-  public void update(float dt) {
-    //handle user input first
-    handleInput(dt);
-
-    //takes 1 step in the physics simulation(60 times per second)
-    world.step(1 / 60f, 6, 2);
-
-    player.update(dt);
-    for (Enemy enemy : creator.getGoombas()) {
-      enemy.update(dt);
-      if (enemy.getX() < player.getX() + MarioBros.AVAKE_ENEMY_TILE_NR * MarioBros.TILE_SIZE / MarioBros.PPM) {
-        enemy.body.setActive(true);
-      }
-    }
-    hud.update(dt);
-
-    //set the camera track mario's x coordinate
-    gameCam.position.x = player.b2body.getPosition().x;
-
-    //update our gamecam with correct coordinates after changes
-    gameCam.update();
-
-    //tell our renderer to draw only what our camera can see in our game world
-    renderer.setView(gameCam);
   }
 
   @Override
@@ -146,11 +137,60 @@ public class PlayScreen implements Screen {
     for (Enemy enemy : creator.getGoombas()) {
       enemy.draw(game.batch);
     }
+    for (Item item : items) {
+      item.draw(game.batch);
+    }
     game.batch.end();
 
     //set our batch to now draw what the HUD camera sees
     game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
     hud.stage.draw();
+  }
+
+  public void update(float dt) {
+    //handle user input first
+    handleInput(dt);
+    handleSpawningItems();
+
+    //takes 1 step in the physics simulation(60 times per second)
+    world.step(1 / 60f, 6, 2);
+
+    player.update(dt);
+
+    for (Enemy enemy : creator.getGoombas()) {
+      enemy.update(dt);
+      if (enemy.getX() < player.getX() + MarioBros.AVAKE_ENEMY_TILE_NR * MarioBros.TILE_SIZE / MarioBros.PPM) {
+        enemy.body.setActive(true);
+      }
+    }
+
+    for (Item item : items) {
+      item.update(dt);
+    }
+
+    hud.update(dt);
+
+    //set the camera track mario's x coordinate
+    gameCam.position.x = player.b2body.getPosition().x;
+
+    //update our gamecam with correct coordinates after changes
+    gameCam.update();
+
+    //tell our renderer to draw only what our camera can see in our game world
+    renderer.setView(gameCam);
+  }
+
+  public void spawnItem(ItemDef idef) {
+    itemsToSpawn.add(idef);
+  }
+
+  public void handleSpawningItems() {
+    if (!itemsToSpawn.isEmpty()) {
+      ItemDef idef = itemsToSpawn.poll();
+      if (idef.type == Mushroom.class) {
+        items.add(new Mushroom(this, idef.position.x, idef.position.y));
+      }
+    }
   }
 
   private void handleInput(float dt) {

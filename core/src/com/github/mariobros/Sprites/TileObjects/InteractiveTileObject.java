@@ -22,8 +22,10 @@ public abstract class InteractiveTileObject {
   protected BodyDef bdef;
   protected FixtureDef fdef;
   protected PolygonShape shape;
+  protected PlayScreen screen;
 
   public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
+    this.screen = screen;
     this.world = screen.getWorld();
     this.map = screen.getMap();
     this.bounds = bounds;

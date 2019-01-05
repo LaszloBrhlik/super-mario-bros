@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
@@ -11,10 +13,12 @@ import com.github.mariobros.Screens.PlayScreen;
 public abstract class Item extends Sprite {
   protected PlayScreen screen;
   protected World world;
+  protected BodyDef bdef;
+  protected FixtureDef fdef;
   protected Vector2 velocity;
   protected boolean toDestroy;
   protected boolean destroyed;
-  private Body body;
+  protected Body body;
 
   public Item(PlayScreen screen, float x, float y) {
     this.screen = screen;

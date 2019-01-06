@@ -109,7 +109,6 @@ public class Mario extends Sprite {
     runGrowAnimation = true;
     setBounds(getX(), getY(), getWidth(), getHeight() * 2);
     MarioBros.assetManager.get("audio/sounds/powerup.wav", Sound.class).play();
-
   }
 
   private void defineMario() {
@@ -142,7 +141,7 @@ public class Mario extends Sprite {
     fdef.shape = head;
     fdef.isSensor = true;
 
-    b2body.createFixture(fdef).setUserData("head");
+    b2body.createFixture(fdef).setUserData(this);
   }
 
   public void update(float dt) {

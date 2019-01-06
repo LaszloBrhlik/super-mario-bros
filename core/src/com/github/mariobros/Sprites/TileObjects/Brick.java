@@ -1,7 +1,7 @@
 package com.github.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.maps.MapObject;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
 import com.github.mariobros.Screens.PlayScreen;
@@ -9,8 +9,8 @@ import com.github.mariobros.Screens.PlayScreen;
 public class Brick extends InteractiveTileObject {
   private final int BRICK_SCORE = 200;
 
-  public Brick(PlayScreen screen, Rectangle bounds) {
-    super(screen, bounds);
+  public Brick(PlayScreen screen, MapObject object) {
+    super(screen, object);
     fixture.setUserData(this);
     setCategoryFilter(MarioBros.BRICK_BIT);
   }

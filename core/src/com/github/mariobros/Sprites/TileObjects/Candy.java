@@ -1,12 +1,12 @@
 package com.github.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.maps.MapObject;
 import com.github.mariobros.Screens.PlayScreen;
 
 public class Candy extends InteractiveTileObject {
-  public Candy(PlayScreen screen, Rectangle bounds) {
-    super(screen, bounds);
+  public Candy(PlayScreen screen, MapObject object) {
+    super(screen, object);
     fixture.setUserData(this);
   }
 

@@ -2,8 +2,8 @@ package com.github.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Scenes.Hud;
@@ -16,8 +16,8 @@ public class Coin extends InteractiveTileObject {
   private final int BLANK_COIN_INDEX = 28;
   private final int COIN_SCORE = 100;
 
-  public Coin(PlayScreen screen, Rectangle bounds) {
-    super(screen, bounds);
+  public Coin(PlayScreen screen, MapObject object) {
+    super(screen, object);
     tileSet = map.getTileSets().getTileSet("tileset_gutter");
     fixture.setUserData(this);
     setCategoryFilter(MarioBros.COIN_BIT);

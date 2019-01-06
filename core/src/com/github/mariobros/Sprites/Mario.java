@@ -15,7 +15,7 @@ import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
 
 public class Mario extends Sprite {
-  public enum State {FALLING, JUMPING, STANDING, RUNNING};
+  public enum State {FALLING, JUMPING, STANDING, RUNNING}
 
   private static final int MARIO_STARTING_POS_X = 32;
   private static final int MARIO_STARTING_POS_Y = 32;
@@ -95,20 +95,22 @@ public class Mario extends Sprite {
         MarioBros.BRICK_BIT |
         MarioBros.ENEMY_BIT |
         MarioBros.OBJECT_BIT |
-        MarioBros.ENEMY_HEAD_BIT;
+        MarioBros.ENEMY_HEAD_BIT |
+        MarioBros.ITEM_BIT;
 
     fdef.shape = shape;
-    b2body.createFixture(fdef);
+    b2body.createFixture(fdef).setUserData(this);
 
     setBounds(0, 0, MARIO_SMALL_SPRITE_WIDTH / MarioBros.PPM, MARIO_SMALL_SPRITE_HEIGHT / MarioBros.PPM);
     setRegion(marioStand);
 
     EdgeShape head = new EdgeShape();
     head.set(new Vector2(-marioHeadEdgeX / MarioBros.PPM, marioHeadEdgeY / MarioBros.PPM), new Vector2(marioHeadEdgeX / MarioBros.PPM, marioHeadEdgeY / MarioBros.PPM));
+    fdef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
     fdef.shape = head;
     fdef.isSensor = true;
 
-    b2body.createFixture(fdef).setUserData("head");
+    b2body.createFixture(fdef).setUserData(this);
   }
 
   public void update(float dt) {
@@ -120,21 +122,21 @@ public class Mario extends Sprite {
     currentState = getState();
 
     TextureRegion region;
-    switch(currentState) {
+    switch (currentState) {
       case JUMPING:
-        region = (TextureRegion)marioJump.getKeyFrame(stateTimer);
+        region = (TextureRegion) marioJump.getKeyFrame(stateTimer);
         break;
       case RUNNING:
-        region = (TextureRegion)marioRun.getKeyFrame(stateTimer, true);
+        region = (TextureRegion) marioRun.getKeyFrame(stateTimer, true);
         break;
       case FALLING:
       case STANDING:
-        default:
-          region = marioStand;
-          break;
+      default:
+        region = marioStand;
+        break;
     }
 
-    if((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+    if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
       region.flip(true, false);
       runningRight = false;
     } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {

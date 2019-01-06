@@ -100,7 +100,7 @@ public class PlayScreen implements Screen {
     //create music
     music = MarioBros.assetManager.get("audio/music/mario_music.ogg", Music.class);
     music.setLooping(true);
-    music.play();
+    //music.play();
 
     //create items
     items = new Array<Item>();

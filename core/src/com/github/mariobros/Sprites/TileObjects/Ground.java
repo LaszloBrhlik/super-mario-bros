@@ -1,11 +1,11 @@
 package com.github.mariobros.Sprites.TileObjects;
 
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.maps.MapObject;
 import com.github.mariobros.Screens.PlayScreen;
 
 public class Ground extends InteractiveTileObject {
-  public Ground(PlayScreen screen, Rectangle bounds) {
-    super(screen, bounds);
+  public Ground(PlayScreen screen, MapObject object) {
+    super(screen, object);
   }
 
   @Override

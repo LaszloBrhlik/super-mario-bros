@@ -35,8 +35,12 @@ public class Coin extends InteractiveTileObject {
     if (getCell().getTile().getId() == BLANK_COIN_INDEX) {
       MarioBros.assetManager.get("audio/sounds/bump.wav", Sound.class).play();
     } else {
-      MarioBros.assetManager.get("audio/sounds/coin.wav", Sound.class).play();
-      screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + MarioBros.TILE_SIZE / MarioBros.PPM), Mushroom.class));
+      if (super.object.getProperties().containsKey("mushroom")) {
+        screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + MarioBros.TILE_SIZE / MarioBros.PPM), Mushroom.class));
+        MarioBros.assetManager.get("audio/sounds/powerup_spawn.wav", Sound.class).play();
+      } else {
+        MarioBros.assetManager.get("audio/sounds/coin.wav", Sound.class).play();
+      }
     }
   }
 

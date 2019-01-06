@@ -110,7 +110,7 @@ public class Mario extends Sprite {
     fdef.shape = head;
     fdef.isSensor = true;
 
-    b2body.createFixture(fdef).setUserData(this);
+    b2body.createFixture(fdef).setUserData("head");
   }
 
   public void update(float dt) {

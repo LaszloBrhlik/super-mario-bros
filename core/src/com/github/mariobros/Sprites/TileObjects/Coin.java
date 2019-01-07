@@ -10,6 +10,7 @@ import com.github.mariobros.Scenes.Hud;
 import com.github.mariobros.Screens.PlayScreen;
 import com.github.mariobros.Sprites.Items.ItemDef;
 import com.github.mariobros.Sprites.Items.Mushroom;
+import com.github.mariobros.Sprites.Mario;
 
 public class Coin extends InteractiveTileObject {
   private TiledMapTileSet tileSet;
@@ -24,7 +25,7 @@ public class Coin extends InteractiveTileObject {
   }
 
   @Override
-  public void onHeadHit() {
+  public void onHeadHit(Mario mario) {
     Gdx.app.log("coin", "collision");
     playSound();
     addScore();

@@ -29,6 +29,9 @@ public class Mario extends Sprite {
   private static final int MARIO_SPRITE_WIDTH = 16;
   private static final int MARIO_SMALL_SPRITE_HEIGHT = 16;
   private static final int MARIO_BIG_SPRITE_HEIGHT = 32;
+  private static final int MARIO_INCREASE_SIZE_Y = 10;
+  private static final int MARIO_BIG_EXTEND_SHAPE = -14;
+  private static final int MARIO_BIG_EXTEND_POSITION = -6;
   private static final float FRAME_DURATION = 0.1f;
   private static final float MARIO_SHAPE_RADIUS = 6.5f;
   private static final float MARIO_HEAD_EDGE_X = 2;
@@ -51,8 +54,11 @@ public class Mario extends Sprite {
 
   private boolean runningRight;
   private float stateTimer;
-  private boolean marioIsBig;
   private boolean runGrowAnimation;
+  private boolean timeToDefineBigMario;
+  private boolean timeToRedefineMario;
+
+  public boolean marioIsBig;
 
   public Mario(PlayScreen screen) {
     this.world = screen.getWorld();
@@ -107,8 +113,17 @@ public class Mario extends Sprite {
   public void grow() {
     marioIsBig = true;
     runGrowAnimation = true;
+    timeToDefineBigMario = true;
     setBounds(getX(), getY(), getWidth(), getHeight() * 2);
     MarioBros.assetManager.get("audio/sounds/powerup.wav", Sound.class).play();
+  }
+
+  public void hit() {
+    if (marioIsBig) {
+      marioIsBig = false;
+      timeToRedefineMario = true;
+      setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+    }
   }
 
   private void defineMario() {
@@ -144,9 +159,95 @@ public class Mario extends Sprite {
     b2body.createFixture(fdef).setUserData(this);
   }
 
+  public void defineBigMario() {
+    Vector2 currentPosition = b2body.getPosition();
+    world.destroyBody(b2body);
+
+    BodyDef bdef = new BodyDef();
+    bdef.position.set(currentPosition.add(0, MARIO_INCREASE_SIZE_Y / MarioBros.PPM));
+    bdef.type = BodyDef.BodyType.DynamicBody;
+    b2body = world.createBody(bdef);
+
+    FixtureDef fdef = new FixtureDef();
+    CircleShape shape = new CircleShape();
+    shape.setRadius(MARIO_SHAPE_RADIUS / MarioBros.PPM);
+    fdef.filter.categoryBits = MarioBros.MARIO_BIT;
+    fdef.filter.maskBits = MarioBros.GROUND_BIT |
+        MarioBros.COIN_BIT |
+        MarioBros.BRICK_BIT |
+        MarioBros.ENEMY_BIT |
+        MarioBros.OBJECT_BIT |
+        MarioBros.ENEMY_HEAD_BIT |
+        MarioBros.ITEM_BIT;
+
+    fdef.shape = shape;
+    b2body.createFixture(fdef).setUserData(this);
+    shape.setPosition(new Vector2(0, MARIO_BIG_EXTEND_SHAPE / MarioBros.PPM));
+    b2body.createFixture(fdef).setUserData(this);
+
+    EdgeShape head = new EdgeShape();
+    head.set(new Vector2(-MARIO_HEAD_EDGE_X / MarioBros.PPM, MARIO_HEAD_EDGE_Y / MarioBros.PPM), new Vector2(MARIO_HEAD_EDGE_X / MarioBros.PPM, MARIO_HEAD_EDGE_Y / MarioBros.PPM));
+    fdef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
+    fdef.shape = head;
+    fdef.isSensor = true;
+
+    b2body.createFixture(fdef).setUserData(this);
+    timeToDefineBigMario = false;
+  }
+
   public void update(float dt) {
-    setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+    //update our sprite to correspond with the position of our Box2D body
+    if (marioIsBig) {
+      setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 + MARIO_BIG_EXTEND_POSITION / MarioBros.PPM);
+    } else {
+      setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+    }
+    //update sprite with the correct frame depending on mario's current action
     setRegion(getFrame(dt));
+    if (timeToDefineBigMario) {
+      defineBigMario();
+    }
+    if (timeToRedefineMario) {
+      redefineMario();
+    }
+  }
+
+  public void redefineMario() {
+    Vector2 position = b2body.getPosition();
+    world.destroyBody(b2body);
+
+    BodyDef bdef = new BodyDef();
+    bdef.position.set(position);
+    bdef.type = BodyDef.BodyType.DynamicBody;
+    b2body = world.createBody(bdef);
+
+    FixtureDef fdef = new FixtureDef();
+    CircleShape shape = new CircleShape();
+    shape.setRadius(MARIO_SHAPE_RADIUS / MarioBros.PPM);
+    fdef.filter.categoryBits = MarioBros.MARIO_BIT;
+    fdef.filter.maskBits = MarioBros.GROUND_BIT |
+        MarioBros.COIN_BIT |
+        MarioBros.BRICK_BIT |
+        MarioBros.ENEMY_BIT |
+        MarioBros.OBJECT_BIT |
+        MarioBros.ENEMY_HEAD_BIT |
+        MarioBros.ITEM_BIT;
+
+    fdef.shape = shape;
+    b2body.createFixture(fdef).setUserData(this);
+
+    //setBounds(0, 0, MARIO_SPRITE_WIDTH / MarioBros.PPM, MARIO_SMALL_SPRITE_HEIGHT / MarioBros.PPM);
+    //setRegion(marioStand);
+
+    EdgeShape head = new EdgeShape();
+    head.set(new Vector2(-MARIO_HEAD_EDGE_X / MarioBros.PPM, MARIO_HEAD_EDGE_Y / MarioBros.PPM), new Vector2(MARIO_HEAD_EDGE_X / MarioBros.PPM, MARIO_HEAD_EDGE_Y / MarioBros.PPM));
+    fdef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
+    fdef.shape = head;
+    fdef.isSensor = true;
+
+    b2body.createFixture(fdef).setUserData(this);
+
+    timeToRedefineMario = false;
   }
 
   private TextureRegion getFrame(float dt) {

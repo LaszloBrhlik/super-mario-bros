@@ -2,6 +2,7 @@ package com.github.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.github.mariobros.Screens.PlayScreen;
+import com.github.mariobros.Sprites.Mario;
 
 public class Ground extends InteractiveTileObject {
   public Ground(PlayScreen screen, MapObject object) {
@@ -9,7 +10,7 @@ public class Ground extends InteractiveTileObject {
   }
 
   @Override
-  public void onHeadHit() {
+  public void onHeadHit(Mario mario) {
 
   }
 

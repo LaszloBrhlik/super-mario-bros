@@ -3,6 +3,7 @@ package com.github.mariobros.Sprites.TileObjects;
 import com.badlogic.gdx.maps.MapObject;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
+import com.github.mariobros.Sprites.Mario;
 
 public class Pipe extends InteractiveTileObject {
   public Pipe(PlayScreen screen, MapObject object) {
@@ -10,7 +11,7 @@ public class Pipe extends InteractiveTileObject {
   }
 
   @Override
-  public void onHeadHit() {
+  public void onHeadHit(Mario mario) {
 
   }
 

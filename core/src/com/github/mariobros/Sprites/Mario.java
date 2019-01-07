@@ -123,6 +123,9 @@ public class Mario extends Sprite {
       marioIsBig = false;
       timeToRedefineMario = true;
       setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+      MarioBros.assetManager.get("audio/sounds/powerdown.wav", Sound.class).play();
+    } else {
+      MarioBros.assetManager.get("audio/sounds/mariodie.wav", Sound.class).play();
     }
   }
 

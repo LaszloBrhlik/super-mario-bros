@@ -145,6 +145,11 @@ public class PlayScreen implements Screen {
     //set our batch to now draw what the HUD camera sees
     game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
     hud.stage.draw();
+
+    if (gameOver()) {
+      game.setScreen(new GameOverScreen(game));
+      dispose();
+    }
   }
 
   public void update(float dt) {
@@ -159,7 +164,7 @@ public class PlayScreen implements Screen {
 
     for (Enemy enemy : creator.getGoombas()) {
       enemy.update(dt);
-      if (enemy.getX() < player.getX() + MarioBros.AVAKE_ENEMY_TILE_NR * MarioBros.TILE_SIZE / MarioBros.PPM) {
+      if (enemy.getX() < player.getX() + MarioBros.AWAKE_ENEMY_TILE_NR * MarioBros.TILE_SIZE / MarioBros.PPM) {
         enemy.body.setActive(true);
       }
     }
@@ -171,7 +176,9 @@ public class PlayScreen implements Screen {
     hud.update(dt);
 
     //set the camera track mario's x coordinate
-    gameCam.position.x = player.b2body.getPosition().x;
+    if (player.currentState != Mario.State.DEAD) {
+      gameCam.position.x = player.b2body.getPosition().x;
+    }
 
     //update our gamecam with correct coordinates after changes
     gameCam.update();
@@ -194,18 +201,25 @@ public class PlayScreen implements Screen {
   }
 
   private void handleInput(float dt) {
-    if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-      player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+    //control our player using immediate impulses
+    if (player.currentState != Mario.State.DEAD) {
+      if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+        player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+      }
+      if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 2) {
+        player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+      }
+      if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -2) {
+        player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+      }
     }
+  }
 
-    if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 2) {
-      player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+  public boolean gameOver() {
+    if (player.currentState == Mario.State.DEAD && player.getStateTimer() > 3) {
+      return true;
     }
-
-    if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -2) {
-      player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-    }
-
+    return false;
   }
 
   @Override

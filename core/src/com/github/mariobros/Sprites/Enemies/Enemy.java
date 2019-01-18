@@ -1,11 +1,14 @@
 package com.github.mariobros.Sprites.Enemies;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.github.mariobros.Screens.PlayScreen;
 
 public abstract class Enemy extends Sprite {
@@ -15,6 +18,9 @@ public abstract class Enemy extends Sprite {
   protected FixtureDef fdef;
   protected boolean toDestroy;
   protected boolean destroyed;
+  protected float stateTime;
+  protected Animation walkAnimation;
+  protected Array<TextureRegion> frames;
 
   public Body body;
   public Vector2 velocity;

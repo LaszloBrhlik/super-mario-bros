@@ -317,8 +317,12 @@ public class Mario extends Sprite {
       runningRight = true;
     }
 
+    //if the current state is the same as the previous state increase the state timer
+    //otherwise the state has changed and we need to reset timer
     stateTimer = currentState == previousState ? stateTimer + dt : 0;
+    //update previous state
     previousState = currentState;
+    //return our final adjusted frame
     return region;
   }
 

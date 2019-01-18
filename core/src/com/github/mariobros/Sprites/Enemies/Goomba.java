@@ -20,10 +20,6 @@ public class Goomba extends Enemy {
   private static final int GOOMBA_SPRITE_Y = 0;
   private static final int GOOMBA_SPRITE_NR = 2;
 
-  private float stateTime;
-  private Animation walkAnimation;
-  private Array<TextureRegion> frames;
-
   public Goomba(PlayScreen screen, float x, float y) {
     super(screen, x, y);
     addAnimation();

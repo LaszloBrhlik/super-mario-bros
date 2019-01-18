@@ -103,4 +103,13 @@ public class Goomba extends Enemy {
     MarioBros.assetManager.get("audio/sounds/stomp.wav", Sound.class).play();
 
   }
+
+  @Override
+  public void onEnemyHit(Enemy enemy) {
+    if (enemy instanceof Turtle && ((Turtle) enemy).currentState == Turtle.State.MOVING_SHELL) {
+      toDestroy = true;
+    } else {
+      reverseVelocity(true, false);
+    }
+  }
 }

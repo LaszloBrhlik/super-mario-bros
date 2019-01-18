@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.github.mariobros.Screens.PlayScreen;
+import com.github.mariobros.Sprites.Mario;
 
 public abstract class Enemy extends Sprite {
   protected World world;
@@ -39,7 +40,7 @@ public abstract class Enemy extends Sprite {
 
   protected abstract void defineEnemy();
 
-  public abstract void hitOnHead();
+  public abstract void hitOnHead(Mario mario);
 
   public abstract void update(float dt);
 

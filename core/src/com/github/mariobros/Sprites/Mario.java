@@ -1,5 +1,6 @@
 package com.github.mariobros.Sprites;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
+import com.github.mariobros.Sprites.Enemies.Enemy;
+import com.github.mariobros.Sprites.Enemies.Turtle;
 
 public class Mario extends Sprite {
   public enum State {FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD}
@@ -128,22 +131,27 @@ public class Mario extends Sprite {
     MarioBros.assetManager.get("audio/sounds/powerup.wav", Sound.class).play();
   }
 
-  public void hit() {
-    if (marioIsBig) {
-      marioIsBig = false;
-      timeToRedefineMario = true;
-      setBounds(getX(), getY(), getWidth(), getHeight() / 2);
-      MarioBros.assetManager.get("audio/sounds/powerdown.wav", Sound.class).play();
+  public void hit(Enemy enemy) {
+    if (enemy instanceof Turtle && (((Turtle) enemy).getCurrentState() == Turtle.State.STANDING_SHELL)) {
+      ((Turtle) enemy).kick(this.getX() <= enemy.getX() ? Turtle.KICK_RIGHT_SPEED : Turtle.KICK_LEFT_SPEED);
     } else {
-      //MarioBros.assetManager.get("audio/music/mario_music.ogg", Sound.class).stop();
-      MarioBros.assetManager.get("audio/sounds/mariodie.wav", Sound.class).play();
-      marioIsDead = true;
-      Filter filter = new Filter();
-      filter.maskBits = MarioBros.NOTHING_BIT;
-      for (Fixture fixture : b2body.getFixtureList()) {
-        fixture.setFilterData(filter);
+
+      if (marioIsBig) {
+        marioIsBig = false;
+        timeToRedefineMario = true;
+        setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+        MarioBros.assetManager.get("audio/sounds/powerdown.wav", Sound.class).play();
+      } else {
+        MarioBros.assetManager.get("audio/music/mario_music.ogg", Music.class).stop();
+        MarioBros.assetManager.get("audio/sounds/mariodie.wav", Sound.class).play();
+        marioIsDead = true;
+        Filter filter = new Filter();
+        filter.maskBits = MarioBros.NOTHING_BIT;
+        for (Fixture fixture : b2body.getFixtureList()) {
+          fixture.setFilterData(filter);
+        }
+        b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
       }
-      b2body.applyLinearImpulse(new Vector2(0,  4f), b2body.getWorldCenter(), true);
     }
   }
 

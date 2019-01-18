@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import com.github.mariobros.MarioBros;
 import com.github.mariobros.Screens.PlayScreen;
+import com.github.mariobros.Sprites.Mario;
 
 public class Goomba extends Enemy {
   private static final float GOOMBA_SHAPE_RADIUS = 6.5f;
@@ -84,6 +85,7 @@ public class Goomba extends Enemy {
     head.set(vertice);
 
     fdef.shape = head;
+    //the measure of bouncing back when collide
     fdef.restitution = 0.5f;
     fdef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
     body.createFixture(fdef).setUserData(this);
@@ -96,7 +98,7 @@ public class Goomba extends Enemy {
   }
 
   @Override
-  public void hitOnHead() {
+  public void hitOnHead(Mario mario) {
     toDestroy = true;
     MarioBros.assetManager.get("audio/sounds/stomp.wav", Sound.class).play();
 
